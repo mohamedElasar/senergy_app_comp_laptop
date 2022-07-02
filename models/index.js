@@ -97,54 +97,59 @@ db.assets.belongsTo(db.assets_categories, {
 // report_type
 db.reports.belongsTo(db.report_types, {
   foreignKey: 'report_type',
-  as: 'reportType'
+  as: 'report_har_type'
 })
 
 //likelihood
 db.reports.belongsTo(db.likelihood, {
   foreignKey: 'likelihood',
-  as: 'likelihoodd'
+  as: 'report_likelihood'
 })
 // severity 
 db.reports.belongsTo(db.severity, {
   foreignKey: 'severity',
-  as: 'severityy'
+  as: 'report_severity'
 })
 // reporter
 db.reports.belongsTo(db.users, {
   foreignKey: 'reporter',
-  as: 'reporterr'
+  as: 'report_reporter'
 })
 // last_modify_by
 db.reports.belongsTo(db.users, {
   foreignKey: 'last_modify_by',
-  as: 'last_modify_byy'
+  as: 'report_last_modify_by'
 })
 // closed_by 
 db.reports.belongsTo(db.users, {
   foreignKey: 'closed_by',
-  as: 'closed_byy'
+  as: 'report_closed_by'
 })
 // acknowledged_by 
 db.reports.belongsTo(db.users, {
   foreignKey: 'acknowledged_by',
-  as: 'acknowledged_byy'
+  as: 'report_acknowledged_by'
 })
 // department 
 db.reports.belongsTo(db.departments, {
   foreignKey: 'department',
-  as: 'departmentt',
+  as: 'report_department',
 })
 //category 
 db.reports.belongsTo(db.hazards_categories, {
   foreignKey: 'category',
-  as: 'categoryy'
+  as: 'report_category'
 })
 // 
 //type 
 db.reports.belongsTo(db.report_types, {
   foreignKey: 'type',
-  as: 'typee'
+  as: 'report_type_'
+})
+//type 
+db.reports.belongsTo(db.locations, {
+  foreignKey: 'location',
+  as: 'report_location'
 })
 // 
 

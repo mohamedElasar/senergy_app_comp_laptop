@@ -5,27 +5,35 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING(200),
       allowNull: false
     },
+    image: {
+      type: Sequelize.STRING(255),
+      allowNull: true
+    },
     content: {
       type: Sequelize.TEXT,
       allowNull: false
 
     },
     report_date: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.BIGINT,
       allowNull: false
     },
     entry_date: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.BIGINT,
       allowNull: false
     },
     last_modify: {
-      type: Sequelize.INTEGER
+      type: Sequelize.BIGINT
     },
     // last_modify_by: {
     //   type: Sequelize.INTEGER
     // },
     report_id: {
       type: Sequelize.STRING(12)
+    },
+    event_severity: {
+      type: Sequelize.INTEGER,
+      allowNull: true
     },
     // report_type
     // likelihood

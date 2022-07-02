@@ -11,11 +11,17 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
     passengers: { type: Sequelize.STRING, allowNull: false },
     from: { type: Sequelize.STRING, allowNull: false },
     to: { type: Sequelize.STRING, allowNull: false },
-    startTime: { type: Sequelize.STRING, allowNull: false },
-    eArrivalTime: { type: Sequelize.STRING, allowNull: false },
-    startday: { type: Sequelize.STRING, allowNull: false },
-    eArrivalday: { type: Sequelize.STRING, allowNull: false },
-    // user: { type: mongoose.Schema.Types.ObjectId, ref: 'User',allowNull: false },
+
+
+    // startTime: { type: Sequelize.STRING, allowNull: false },
+    // eArrivalTime: { type: Sequelize.STRING, allowNull: false },
+    // startday: { type: Sequelize.STRING, allowNull: false },
+    // eArrivalday: { type: Sequelize.STRING, allowNull: false },
+
+
+
+    startTimeStamp: { type: Sequelize.BIGINT, allowNull: false },
+    endTimeStamp: { type: Sequelize.BIGINT, allowNull: false },
 
 
     tirepressure: { type: Sequelize.BOOLEAN, defaultValue: 0 },

@@ -7,15 +7,22 @@ const tripRouter =require('./routers/tripRouter.js') ;
 const notificationRouter =require('./routers/notificationRouter.js') ;
 const HarRouter =require('./routers/HAR_Router.js') ;
 
-// import productRouter from './routers/productRouter.js';
-// import userRouter from './routers/userRouter.js';
-// import orderRouter from './routers/orderRouter.js';
+const multer = require('multer');
+const path = require('path')
+var bodyParser = require('body-parser');
+
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+
+
 app.use(express.urlencoded({ extended: true }));
+app.use('/images',express.static(path.join(__dirname,'images')))
+
 
 const db = require("./models");
 db.sequelize.sync({ force: false });
@@ -29,6 +36,24 @@ app.use('/api/har', HarRouter);
 // app.get('/api/config/paypal', (req, res) => {
 //   res.send(process.env.PAYPAL_CLIENT_ID || 'sb');
 // });
+const storage = multer.diskStorage({
+  destination:(req,file,cb)=>{
+      cb(null, 'images')
+  }, filename:(req,file,cb)=>{
+      cb(null,new Date().toISOString().replace(/:/g, '-')+file.originalname)
+      
+  }
+
+})
+
+const upload = multer({storage:storage});
+app.post('/api/upload',upload.single('file'),(req,res)=>{
+  console.log(req.file);
+  res.status(200).json('file has been uploaded')
+})
+
+
+
 app.get('/', (req, res) => {
   res.send('Server is ready');
 });

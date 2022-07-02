@@ -5,6 +5,7 @@ const { isAdmin, isAuth } = require('../utils.js');
 const db = require("../models");
 const Trip = db.trips;
 const Op = db.Sequelize.Op;
+const sequelize = require('sequelize');
 
 const tripRouter = express.Router();
 
@@ -40,14 +41,33 @@ tripRouter.post(
   '/',
   isAuth,
   expressAsyncHandler(async (req, res) => {
+    console.log(req.body.startTimeStamp);
+    console.log('req.body.startTimeStamp');
+
+//     var start = new Date();
+// start.setHours(0,0,0,0);
+// console.log( start.toUTCString() );
+
+
+const unixTimestamp =Number(req.body.startTimeStamp);
+// function padTo2Digits(num) {
+//   return num.toString().padStart(2, '0');
+// }
+const date = new Date(unixTimestamp );
+
+const hours = date.getHours();
+
+console.log(hours);
+
     const newTrip = new Trip(req.body);
     newTrip.user_id = req.user._id;
     try {
 
-      if ((req.body.driverName === '') || (req.body.phone === '') || (req.body.carNumber === '') || (req.body.passengers === '') || (req.body.from === '') || (req.body.to === '') || (req.body.to == '') || (req.body.startTime == '')
-        || (req.body.eArrivalTime == '') || (req.body.startday == '') || (req.body.eArrivalday == '')
+      if ((req.body.driverName === '') || (req.body.phone === '') || (req.body.carNumber === '') || (req.body.passengers === '') || (req.body.from === '') || (req.body.to === '') || (req.body.to == '')
+       
 
       ) {
+        console.log(req.body)
         res.status(400).send({ message: 'Your should input all data' });
       }
       else if (req.body.vehicle === false) {
@@ -198,7 +218,7 @@ tripRouter.get(
 
     try {
       // const trips = await Trip.findAndCountAll({ where: condition, limit, offset });
-      const trips = await Trip.findAndCountAll({ where: condition, limit, offset });
+      const trips = await Trip.findAndCountAll({ where: condition, limit, offset,order:[['id','DESC']] });
       res.send(getPagingData(trips, page, limit));
 
     } catch (error) {
@@ -219,7 +239,7 @@ tripRouter.get(
 
     try {
       // const trips = await Trip.findAndCountAll({ where: condition, limit, offset });
-      const trips = await Trip.findAndCountAll({ where: {user_id:req.user._id}, limit, offset });
+      const trips = await Trip.findAndCountAll({ where: {user_id:req.user._id}, limit, offset,order:[['id','DESC']] });
       res.send(getPagingData(trips, page, limit));
 
     } catch (error) {
