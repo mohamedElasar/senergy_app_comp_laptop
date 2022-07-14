@@ -39,13 +39,25 @@ db.report_types = require("./report_types.model.js")(sequelize, Sequelize);
 db.severity = require("./severity.model.js")(sequelize, Sequelize);
 db.types = require("./types.model.js")(sequelize, Sequelize);
 db.reports = require("./har_reports.model.js")(sequelize, Sequelize);
+db.actions = require("./har_report_action.model.js")(sequelize, Sequelize);
+db.advs = require("./advs.model.js")(sequelize, Sequelize);
+db.cars = require("./cars.model.js")(sequelize, Sequelize);
+db.purposes = require("./purpose.model.js")(sequelize, Sequelize);
 
 
 
 // trips users 
 db.trips.belongsTo(db.users, {
   foreignKey: 'user_id',
-  as: 'user'
+  as: 'userr'
+})
+db.trips.belongsTo(db.cars, {
+  foreignKey: 'car_id',
+  as: 'carr'
+})
+db.trips.belongsTo(db.purposes, {
+  foreignKey: 'purpose_id',
+  as: 'purposee'
 })
 
 // devices users 
@@ -95,7 +107,7 @@ db.assets.belongsTo(db.assets_categories, {
 
 ///// report foriegn keys 
 // report_type
-db.reports.belongsTo(db.report_types, {
+db.reports.belongsTo(db.types, {
   foreignKey: 'report_type',
   as: 'report_har_type'
 })
@@ -153,6 +165,25 @@ db.reports.belongsTo(db.locations, {
 })
 // 
 
+
+
+//actions
+db.actions.belongsTo(db.users, {
+  foreignKey: 'assigned_to',
+  as: 'assigned_too'
+})
+db.actions.belongsTo(db.users, {
+  foreignKey: 'assigned_by',
+  as: 'assigned_byy'
+})
+db.actions.belongsTo(db.users, {
+  foreignKey: 'closed_by',
+  as: 'closed_byy'
+})
+db.actions.belongsTo(db.reports, {
+  foreignKey: 'report_id',
+  as: 'report_idd'
+})
 
 
 db.sequelize.sync({ force: false })

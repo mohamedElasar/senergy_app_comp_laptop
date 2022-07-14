@@ -4,6 +4,8 @@ const bcrypt = require('bcryptjs');
 const { isAdmin, isAuth } = require('../utils.js');
 const db = require("../models");
 const Trip = db.trips;
+const Car = db.cars;
+const Purpose = db.purposes;
 const Op = db.Sequelize.Op;
 const sequelize = require('sequelize');
 
@@ -36,6 +38,20 @@ tripRouter.get(
     }
   })
 );
+tripRouter.get(
+  '/cars/cars',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const cars = await Car.findAll();
+      res.send(cars);
+
+    } catch (error) {
+      console.log(error);
+      res.status(500).send(error);
+    }
+  })
+);
 
 tripRouter.post(
   '/',
@@ -44,27 +60,31 @@ tripRouter.post(
     console.log(req.body.startTimeStamp);
     console.log('req.body.startTimeStamp');
 
-//     var start = new Date();
-// start.setHours(0,0,0,0);
-// console.log( start.toUTCString() );
+    //     var start = new Date();
+    // start.setHours(0,0,0,0);
+    // console.log( start.toUTCString() );
 
 
-const unixTimestamp =Number(req.body.startTimeStamp);
-// function padTo2Digits(num) {
-//   return num.toString().padStart(2, '0');
-// }
-const date = new Date(unixTimestamp );
+    const unixTimestamp = Number(req.body.startTimeStamp);
+    // function padTo2Digits(num) {
+    //   return num.toString().padStart(2, '0');
+    // }
+    const date = new Date(unixTimestamp);
 
-const hours = date.getHours();
+    const hours = date.getHours();
 
-console.log(hours);
+    console.log(hours);
 
     const newTrip = new Trip(req.body);
     newTrip.user_id = req.user._id;
+    if(hours < 18 && hours >=4){
+      newTrip.isApproved = true;
+      newTrip.isApprovedAt = Date.now();
+    }
     try {
 
-      if ((req.body.driverName === '') || (req.body.phone === '') || (req.body.carNumber === '') || (req.body.passengers === '') || (req.body.from === '') || (req.body.to === '') || (req.body.to == '')
-       
+      if ( (req.body.phone === '') || (req.body.carNumber === '') || (req.body.passengers === '') || (req.body.from === '') || (req.body.to === '') || (req.body.to == '')
+
 
       ) {
         console.log(req.body)
@@ -91,7 +111,13 @@ tripRouter.get(
   '/:id',
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    const trip = await Trip.findByPk(req.params.id);
+    // const trip = await Trip.findByPk(req.params.id);
+    const trip = await Trip.findAll({where: {id: req.params.id},include: [
+      'carr',
+      'userr',
+      'purposee'
+
+    ],});
     if (trip) {
       res.send(trip);
     } else {
@@ -161,8 +187,8 @@ tripRouter.delete(
         });
         // trip.isApprovedAt = Date.now();
 
-       
-        res.send({ message: 'your trip is deleted',trip:trip });
+
+        res.send({ message: 'your trip is deleted', trip: trip });
       } else {
         res.status(404).send({ message: 'trip Not Found' });
       }
@@ -213,12 +239,18 @@ tripRouter.get(
   expressAsyncHandler(async (req, res) => {
     const { page, size, driverName } = req.query;
     const { limit, offset } = getPagination(page, size);
-    var condition = driverName ? { driverName: { [Op.like]: `%${driverName}%` } } : null;
+    var condition =  null;
 
 
     try {
       // const trips = await Trip.findAndCountAll({ where: condition, limit, offset });
-      const trips = await Trip.findAndCountAll({ where: condition, limit, offset,order:[['id','DESC']] });
+      const trips = await Trip.findAndCountAll({ where: condition, limit, offset, order: [['id', 'DESC']],       
+       include: [
+        'carr',
+        'userr',
+        'purposee'
+
+      ],});
       res.send(getPagingData(trips, page, limit));
 
     } catch (error) {
@@ -239,12 +271,36 @@ tripRouter.get(
 
     try {
       // const trips = await Trip.findAndCountAll({ where: condition, limit, offset });
-      const trips = await Trip.findAndCountAll({ where: {user_id:req.user._id}, limit, offset,order:[['id','DESC']] });
+      const trips = await Trip.findAndCountAll({ where: { user_id: req.user._id }, limit, offset, order: [['id', 'DESC']],
+      include: [
+        'carr',
+        'userr',
+        'purposee'
+
+      ], });
       res.send(getPagingData(trips, page, limit));
 
     } catch (error) {
       console.log(error);
       res.status(500).send(error);
+    }
+  })
+);
+
+tripRouter.get(
+  '/purpose/all/all',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    // const har = await Report.findByPk(req.params.id);
+    const purposes = await Purpose.findAll(
+      {
+
+      }
+    );
+    if (purposes) {
+      res.send(purposes);
+    } else {
+      res.status(404).send({ message: 'images Not Found' });
     }
   })
 );

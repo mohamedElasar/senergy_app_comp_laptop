@@ -5,9 +5,9 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
 
   const Trip = sequelize.define("trip", {
 
-    driverName: { type: Sequelize.STRING, allowNull: false },
+    // driverName: { type: Sequelize.STRING, allowNull: false },
     phone: { type: Sequelize.STRING, allowNull: false },
-    carNumber: { type: Sequelize.STRING, allowNull: false },
+    // carNumber: { type: Sequelize.STRING, allowNull: false },
     passengers: { type: Sequelize.STRING, allowNull: false },
     from: { type: Sequelize.STRING, allowNull: false },
     to: { type: Sequelize.STRING, allowNull: false },
