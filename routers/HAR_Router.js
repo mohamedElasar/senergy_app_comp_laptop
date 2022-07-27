@@ -693,18 +693,9 @@ HarRouter.get(
 
       }
     );
-    var dt = new Date( "December 25, 1995 23:15:00" );
-    var dt = new Date( Date.now() );
-       var i =   dt.getMonth(); 
-
-//     function padTo2Digits(num) {
-//       return num.toString().padStart(2, '0');
-//     }
-
-//     const date = new Date(Date.now());
-
-//     const month = padTo2Digits(date.getMonth() + 1);
-//  console.log(month);
+    // var dt = new Date( "December 25, 1995 23:15:00" );
+    // var dt = new Date( Date.now() );
+    //    var i =   dt.getMonth(); 
 
   
 

@@ -8,10 +8,15 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING(32)
     },
     name: {
-      type: Sequelize.STRING(100)
+      type: Sequelize.STRING(100),
+      allowNull: false
+
+      
     },
     email: {
-      type: Sequelize.STRING(60)
+      type: Sequelize.STRING(60),
+      allowNull: false
+
     },
     status: {
       type: Sequelize.TINYINT(4),

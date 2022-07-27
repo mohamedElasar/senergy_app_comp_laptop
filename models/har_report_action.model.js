@@ -7,7 +7,7 @@ module.exports = (sequelize, Sequelize) => {
     },
     closingNote: {
       type: Sequelize.TEXT,
-      allowNull: true
+      allowNull: false
     },
 
 
@@ -17,11 +17,11 @@ module.exports = (sequelize, Sequelize) => {
     },
     closing_date: {
       type: Sequelize.BIGINT,
-      allowNull: true
+      allowNull: false
     },
     action_entry_date: {
       type: Sequelize.BIGINT,
-      allowNull: true
+      allowNull: false
     },
     closed: {
       type: Sequelize.BOOLEAN,
