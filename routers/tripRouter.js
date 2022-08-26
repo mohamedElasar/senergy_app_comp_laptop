@@ -1,6 +1,5 @@
 const express = require('express');
 const expressAsyncHandler = require('express-async-handler');
-const bcrypt = require('bcryptjs');
 const { isAdmin, isAuth } = require('../utils.js');
 const db = require("../models");
 const Trip = db.trips;

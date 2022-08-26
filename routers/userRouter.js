@@ -1,13 +1,16 @@
-const express = require('express') ;
-const expressAsyncHandler =require('express-async-handler') ;
-const bcrypt =require('bcryptjs') ;
-const data =require('../data.js') ;
+const express = require('express');
+const expressAsyncHandler = require('express-async-handler');
+// const bcrypt = require('bcryptjs');
+const CryptoJS = require('crypto-js')
+
+
+const data = require('../data.js');
 const db = require("../models");
 const User = db.users;
 const Op = db.Sequelize.Op;
 
 
-const { generateToken, isAuth } =require('../utils.js') ;
+const { generateToken, isAuth } = require('../utils.js');
 
 const userRouter = express.Router();
 
@@ -23,9 +26,20 @@ userRouter.get(
 userRouter.post(
   '/signin',
   expressAsyncHandler(async (req, res) => {
-    const user = await User.findOne({where:{ email: req.body.email }});
+    const user = await User.findOne({ where: { email: req.body.email } });
+    console.log(user.password);
     if (user) {
-      if (req.body.password = user.password) {
+      // const hashedpassword = CryptoJS.AES.decrypt(user.password, process.env.Pass_Sec).toString(CryptoJS.enc.Utf8);
+      // const opassword =hashedpassword.toString(CryptoJS.enc.Utf8);
+      // // const opassword = hashedpassword.toString(CryptoJS.enc.Utf8)
+
+      // console.log(opassword);
+
+      // opassword !== req.body.password && res.status(401).json({
+      //     "message": "Wrong Credentials."
+      // })
+      if(user.password == req.body.password){
+
         res.send({
           _id: user.id,
           name: user.name,
@@ -35,6 +49,7 @@ userRouter.post(
         });
         return;
       }
+      
     }
     res.status(401).send({ message: 'Invalid email or password' });
   })
@@ -43,32 +58,27 @@ userRouter.post(
 userRouter.post(
   '/register',
   expressAsyncHandler(async (req, res) => {
+    const encPass = CryptoJS.AES.encrypt(req.body.password, process.env.Pass_Sec).toString();
     const user = {
       name: req.body.name,
       email: req.body.email,
-      password: req.body.password,
-      isAdmin:req.body.isAdmin
+      password:req.body.password,
+
+      isAdmin: req.body.isAdmin
     };
 
     User.create(user)
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the user."
+      .then(data => {
+        res.send(data);
+      })
+      .catch(err => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while creating the user."
+        });
       });
-    });
 
-    // const createdUser = await user.save();
-    // res.send({
-    //   _id: createdUser.id,
-    //   name: createdUser.name,
-    //   email: createdUser.email,
-    //   isAdmin: createdUser.isAdmin,
-    //   token: generateToken(createdUser),
-    // });
+
   })
 );
 
@@ -94,27 +104,6 @@ userRouter.get(
     }
   })
 );
-// userRouter.put(
-//   '/profile',
-//   isAuth,
-//   expressAsyncHandler(async (req, res) => {
-//     const user = await User.findById(req.user._id);
-//     if (user) {
-//       user.name = req.body.name || user.name;
-//       user.email = req.body.email || user.email;
-//       if (req.body.password) {
-//         user.password = req.body.password;
-//       }
-//       const updatedUser = await user.save();
-//       res.send({
-//         _id: updatedUser._id,
-//         name: updatedUser.name,
-//         email: updatedUser.email,
-//         isAdmin: updatedUser.isAdmin,
-//         token: generateToken(updatedUser),
-//       });
-//     }
-//   })
-// );
+
 
 module.exports = userRouter;
