@@ -391,10 +391,7 @@ const storage = multer.diskStorage({
 })
 
 const upload = multer({ storage: storage });
-// app.post('/api/upload',upload.single('file'),(req,res)=>{
-//   console.log(req.file);
-//   res.status(200).json('file has been uploaded')
-// })
+
 
 // create report 
 HarRouter.post(
@@ -430,14 +427,13 @@ HarRouter.post(
       const day = padTo2Digits(date.getDate());
 
       const dateTime = `${year}${month}${day}000`;
-      console.log(dateTime);
       const NumberReportday = Number(dateTime);
 
 
 
       var start = new Date();
       start.setHours(0, 0, 0, 0);
-      console.log(start.toUTCString());
+
 
 
       const toTimestamp = (strDate) => {
@@ -454,9 +450,7 @@ HarRouter.post(
           }
         }
       })
-      // console.log(Number(todayTimeStamp));
-      // console.log('todays_reports');
-      // console.log(NumberReportday+todays_reports+1);
+
 
       Report.create({
         title: req.body.title,
@@ -466,8 +460,7 @@ HarRouter.post(
         last_modify: req.body.last_modify,
         report_id: NumberReportday + todays_reports + 1,
         status: req.body.status,
-        // "closing_date": 1654006650,
-        // "acknowledged_date": 1654006650,
+
         area: req.body.area,
         risk_rating: req.body.risk_rating,
         class: req.body.class,
@@ -557,8 +550,7 @@ HarRouter.put(
   expressAsyncHandler(async (req, res) => {
 
     try {
-      console.log(req.body);
-      // console.log(req.body.closing_date);
+
 
       const action = await Action.findByPk(req.params.id);
       if (action) {
@@ -696,33 +688,26 @@ HarRouter.get(
 
       }
     );
-    // var dt = new Date( "December 25, 1995 23:15:00" );
-    // // var dt = new Date( Date.now() );
-    //    var i =   dt.getMonth(); 
-    //    console.log(i);
-    //    console.log('i');
+
 
    const countcourses = await Course.count({
   });
    const userCoursesTaken = await UserCourses.count({
     where: { user_id: req.params.id },
   });
-  // const percentageTaken = userCoursesTaken/countcourses;
-//  Math.round((userCoursesTaken / countcourses) * 100);
- const percentageTaken = ((userCoursesTaken/countcourses) * 100).toFixed(2)
 
-//  const user = await User.findAll({
-//   where: { id: req.params.id },
-//   include: 
-//     'isAdmin'
-  
-//  })
+  percentageTaken = ((userCoursesTaken/countcourses) * 100).toFixed(2)
+ if(Number.isNaN( Number(percentageTaken) )){
+  percentageTaken = 0;
+ }
+
+
+
  const user = await User.findAll({ where: { id: req.params.id }, include: [] });
  
  const userCreatedAt = user[0].dataValues.createdAt;
  const dateUser = new Date(userCreatedAt);
 
-//  const monthCreatedAt = dateUser.getMonth() +1 ;
 
  function getMonthDifference(startDate, endDate) {
   return (
@@ -731,13 +716,14 @@ HarRouter.get(
     12 * (endDate.getFullYear() - startDate.getFullYear())
   );
 }
-// console.log(getMonthDifference(dateUser,new Date(Date.now())))
-//  now =  Date.now() ;
-//  const date = Date(now);
-  // const month = now.getMonth() ;
 
-  requiredHar = getMonthDifference(dateUser,new Date(Date.now())) *2; 
-   
+
+  requiredHar = getMonthDifference(dateUser,new Date(Date.now())) *2 +2; 
+  const advs = await Adv.findAll(
+    {
+
+    });
+
 
 
 
@@ -748,6 +734,7 @@ HarRouter.get(
          percentagecourses:percentageTaken+' %', 
          usertrainingrequired:user[0].dataValues.training_required.toString() +' %',
          HarTrack:(yourHars.length-requiredHar).toString(),
+         advs:advs
         });
     } else {
       res.status(404).send({ message: 'actions Not Found' });
@@ -760,7 +747,6 @@ HarRouter.get(
   '/advs/all/all',
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    // const har = await Report.findByPk(req.params.id);
     const advs = await Adv.findAll(
       {
 

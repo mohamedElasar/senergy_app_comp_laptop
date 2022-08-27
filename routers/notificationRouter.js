@@ -32,7 +32,7 @@ notificationRouter.post(
     expressAsyncHandler(async (req, res) => {
         const mydevice = await Device.findOne({ where: { token: req.body.token } });
         if (mydevice) {
-            // console.log(mydevice);
+  
 
             const newdevice = await Device.update({ token: req.body.token, isAdmin: req.body.isAdmin,user_id:req.body._id }, {
                 where: {
@@ -69,7 +69,7 @@ notificationRouter.post(
     expressAsyncHandler(async (req, res) => {
 
         const admin_devices = await Device.findAll({ where: { isAdmin: true } });
-        console.log('admin_devices')
+    
 
         if (admin_devices) {
             const registrationTokens = admin_devices.map((device) => device.token);
@@ -102,15 +102,7 @@ notificationRouter.post(
             } catch (error) {
                 console.log(error)
             }
-            // try {
 
-            //     await fcm.getMessaging().sendMulticast(message)
-            //          .then((response) => {
-            //              console.log(response.successCount + ' messages were sent successfully');
-            //          });
-            // } catch (error) {
-            //     console.log(error);
-            // }
 
 
         } else {

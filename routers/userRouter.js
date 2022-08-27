@@ -27,18 +27,9 @@ userRouter.post(
   '/signin',
   expressAsyncHandler(async (req, res) => {
     const user = await User.findOne({ where: { email: req.body.email } });
-    console.log(user.password);
 
     if (user) {
-      // const hashedpassword = CryptoJS.AES.decrypt(user.password, process.env.Pass_Sec).toString(CryptoJS.enc.Utf8);
-      // const opassword =hashedpassword.toString(CryptoJS.enc.Utf8);
-      // // const opassword = hashedpassword.toString(CryptoJS.enc.Utf8)
 
-      // console.log(opassword);
-
-      // opassword !== req.body.password && res.status(401).json({
-      //     "message": "Wrong Credentials."
-      // })
       const result = await bcrypt.compare(req.body.password, user.password.toString());
 
       if(result==true){
@@ -67,13 +58,13 @@ userRouter.post(
         message:
           "email already exist"
       });
+      return;
     }
     const user = {
       name: req.body.name,
       email: req.body.email,
-      // password:req.body.password,
       password:await bcrypt.hash(req.body.password, 10),
-
+      position:req.body.position,
       isAdmin: req.body.isAdmin
     };
 

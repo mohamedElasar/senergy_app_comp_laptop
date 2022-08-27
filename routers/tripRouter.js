@@ -14,7 +14,6 @@ tripRouter.get(
   '/mine',
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    console.log(req.user);
 
     const trips = await Trip.findAll({ where: { user_id: req.user._id } });
     res.send(trips);
@@ -56,23 +55,18 @@ tripRouter.post(
   '/',
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    console.log(req.body.startTimeStamp);
-    console.log('req.body.startTimeStamp');
 
-    //     var start = new Date();
-    // start.setHours(0,0,0,0);
-    // console.log( start.toUTCString() );
+
+
 
 
     const unixTimestamp = Number(req.body.startTimeStamp);
-    // function padTo2Digits(num) {
-    //   return num.toString().padStart(2, '0');
-    // }
+
     const date = new Date(unixTimestamp);
 
     const hours = date.getHours();
 
-    console.log(hours);
+
 
     const newTrip = new Trip(req.body);
     newTrip.user_id = req.user._id;
