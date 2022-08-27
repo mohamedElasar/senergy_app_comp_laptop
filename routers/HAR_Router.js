@@ -26,6 +26,9 @@ const Op = db.Sequelize.Op;
 const Trip = db.trips;
 const Adv = db.advs;
 
+const Course = db.courses;
+const UserCourses = db.User_courses;
+
 
 const HarRouter = express.Router();
 
@@ -694,15 +697,58 @@ HarRouter.get(
       }
     );
     // var dt = new Date( "December 25, 1995 23:15:00" );
-    // var dt = new Date( Date.now() );
+    // // var dt = new Date( Date.now() );
     //    var i =   dt.getMonth(); 
+    //    console.log(i);
+    //    console.log('i');
 
+   const countcourses = await Course.count({
+  });
+   const userCoursesTaken = await UserCourses.count({
+    where: { user_id: req.params.id },
+  });
+  // const percentageTaken = userCoursesTaken/countcourses;
+//  Math.round((userCoursesTaken / countcourses) * 100);
+ const percentageTaken = ((userCoursesTaken/countcourses) * 100).toFixed(2)
+
+//  const user = await User.findAll({
+//   where: { id: req.params.id },
+//   include: 
+//     'isAdmin'
   
+//  })
+ const user = await User.findAll({ where: { id: req.params.id }, include: [] });
+ 
+ const userCreatedAt = user[0].dataValues.createdAt;
+ const dateUser = new Date(userCreatedAt);
+
+//  const monthCreatedAt = dateUser.getMonth() +1 ;
+
+ function getMonthDifference(startDate, endDate) {
+  return (
+    endDate.getMonth() -
+    startDate.getMonth() +
+    12 * (endDate.getFullYear() - startDate.getFullYear())
+  );
+}
+// console.log(getMonthDifference(dateUser,new Date(Date.now())))
+//  now =  Date.now() ;
+//  const date = Date(now);
+  // const month = now.getMonth() ;
+
+  requiredHar = getMonthDifference(dateUser,new Date(Date.now())) *2; 
+   
 
 
 
     if (actions) {
-      res.send({ count: actions.length, countTripsNeedApprove: tripsNeedApproval.length});
+      res.send({
+         count: actions.length,
+         countTripsNeedApprove: tripsNeedApproval.length,
+         percentagecourses:percentageTaken+' %', 
+         usertrainingrequired:user[0].dataValues.training_required.toString() +' %',
+         HarTrack:(yourHars.length-requiredHar).toString(),
+        });
     } else {
       res.status(404).send({ message: 'actions Not Found' });
     }

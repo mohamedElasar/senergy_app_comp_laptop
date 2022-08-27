@@ -5,7 +5,7 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING(20)
     },
     password: {
-      type: Sequelize.STRING(32),
+      type: Sequelize.STRING(250),
       allowNull: false
 
     },
@@ -26,6 +26,7 @@ module.exports = (sequelize, Sequelize) => {
     },
     position: {
       type: Sequelize.STRING(20),
+      allowNull: false
 
     },
     default_pass: {
@@ -67,6 +68,12 @@ module.exports = (sequelize, Sequelize) => {
       defaultValue:false,
       allowNull: false
     },
+    training_required: {
+      type: Sequelize.INTEGER(12),
+      defaultValue:100
+    },
+    createdAt: { type: Sequelize.BIGINT, allowNull: false,defaultValue:Date.now() },
+
 
   },
   { timestamps: false }

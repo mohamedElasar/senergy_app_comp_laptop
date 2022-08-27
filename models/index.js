@@ -43,6 +43,8 @@ db.actions = require("./har_report_action.model.js")(sequelize, Sequelize);
 db.advs = require("./advs.model.js")(sequelize, Sequelize);
 db.cars = require("./cars.model.js")(sequelize, Sequelize);
 db.purposes = require("./purpose.model.js")(sequelize, Sequelize);
+db.courses = require("./courses.model.js")(sequelize, Sequelize);
+db.User_courses = require("./user_courses.model.js")(sequelize, Sequelize);
 
 
 
@@ -84,6 +86,15 @@ db.user_hierarcys.belongsTo(db.users, {
 db.user_hierarcys.belongsTo(db.users, {
   foreignKey: 'supervisor_id',
   as: 'supers'
+})
+// courses relations 
+db.User_courses.belongsTo(db.users, {
+  foreignKey: 'user_id',
+  as: 'users'
+})
+db.User_courses.belongsTo(db.courses, {
+  foreignKey: 'course_id',
+  as: 'courses'
 })
 // user classification 
 db.classifications.belongsTo(db.reports, {

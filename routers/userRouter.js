@@ -1,6 +1,6 @@
 const express = require('express');
 const expressAsyncHandler = require('express-async-handler');
-// const bcrypt = require('bcryptjs');
+const bcrypt = require("bcrypt")
 const CryptoJS = require('crypto-js')
 
 
@@ -28,6 +28,7 @@ userRouter.post(
   expressAsyncHandler(async (req, res) => {
     const user = await User.findOne({ where: { email: req.body.email } });
     console.log(user.password);
+
     if (user) {
       // const hashedpassword = CryptoJS.AES.decrypt(user.password, process.env.Pass_Sec).toString(CryptoJS.enc.Utf8);
       // const opassword =hashedpassword.toString(CryptoJS.enc.Utf8);
@@ -38,7 +39,9 @@ userRouter.post(
       // opassword !== req.body.password && res.status(401).json({
       //     "message": "Wrong Credentials."
       // })
-      if(user.password == req.body.password){
+      const result = await bcrypt.compare(req.body.password, user.password.toString());
+
+      if(result==true){
 
         res.send({
           _id: user.id,
@@ -58,18 +61,26 @@ userRouter.post(
 userRouter.post(
   '/register',
   expressAsyncHandler(async (req, res) => {
-    const encPass = CryptoJS.AES.encrypt(req.body.password, process.env.Pass_Sec).toString();
+    const usercheck = await User.findOne({ where: { email: req.body.email } });
+    if(usercheck){
+      res.status(401).send({
+        message:
+          "email already exist"
+      });
+    }
     const user = {
       name: req.body.name,
       email: req.body.email,
-      password:req.body.password,
+      // password:req.body.password,
+      password:await bcrypt.hash(req.body.password, 10),
 
       isAdmin: req.body.isAdmin
     };
 
     User.create(user)
       .then(data => {
-        res.send(data);
+        const {password,...others} = data.dataValues;
+        res.send(others);
       })
       .catch(err => {
         res.status(500).send({
