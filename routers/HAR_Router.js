@@ -25,6 +25,7 @@ const Department = db.departments;
 const Op = db.Sequelize.Op;
 const Trip = db.trips;
 const Adv = db.advs;
+const Report_Img = db.Report_images;
 
 const Course = db.courses;
 const UserCourses = db.User_courses;
@@ -273,7 +274,7 @@ HarRouter.get(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     // const har = await Report.findByPk(req.params.id);
-    const har = await Report.findAll({
+    const har = await Report.findOne({
       where: { id: req.params.id }, include: [
         'report_har_type',
         'report_likelihood',
@@ -288,8 +289,24 @@ HarRouter.get(
         'report_location',
       ],
     });
+    const reportImage = await Report_Img.findOne({ 
+      where: { report_id: req.params.id }
+    })
+
+    cart = []
+const newhar = har.dataValues;
+const myImage = {
+  image: reportImage.dataValues.image
+};
+// newhar.image = 'test'
+const newharr = {
+  ...newhar,
+  ...myImage
+};
+console.log(newharr);
+cart.push(newharr)
     if (har) {
-      res.send(har);
+      res.send(cart);
     } else {
       res.status(404).send({ message: 'har Not Found' });
     }
@@ -377,6 +394,7 @@ HarRouter.get(
 );
 
 const multer = require('multer');
+const { Report_images } = require('../models');
 // const path = require('path')
 
 
@@ -478,11 +496,15 @@ HarRouter.post(
         department: req.body.department,
         category: req.body.category,
         type: req.body.type,
-        image: req.file ? req.file.path : null,
+        // image: req.file ? req.file.path : null,
         location: req.body.location,
         event_severity: req.body.event_severity
       })
         .then(data => {
+          Report_Img.create({
+            'report_id': data.id, 
+            'image':req.file ? req.file.path : null,
+          })
           classification_details.forEach(e =>
             Classification.create({
               'report_id': data.id,
@@ -651,8 +673,36 @@ HarRouter.get(
         ],
       }
     );
+    const imge = await Report_Img.findByPk(req.params.id)
+
+
+    // const actionnew = action.dataValues;
+    // actionnew.report_idd.image = 'test';
+    // console.log(actionnew);
+    // cart = []
+    // const newhar = har.dataValues;
+    // const myImage = {
+    //   image: imge.dataValues.image
+    // };
+    // const reportid = actionnew['report_idd'];
+    // const newreportid = {
+    //   ...reportid.dataValues,
+    //   ...myImage
+    // }
+    // // newhar.image = 'test'
+    // const newharr = {
+    //   ...newreportid,
+    // };
+    // const empty = {}; 
+    // empty.report_idd = newharr;
+
+    // const test = {
+    //   ...empty,
+    //   ...actionnew
+    // }
+
     if (action) {
-      res.send(action);
+      res.send({action,reportImage: imge.dataValues.image});
 
     } else {
       res.status(404).send({ message: 'actions Not Found' });

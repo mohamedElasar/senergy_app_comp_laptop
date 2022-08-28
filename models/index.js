@@ -45,6 +45,7 @@ db.cars = require("./cars.model.js")(sequelize, Sequelize);
 db.purposes = require("./purpose.model.js")(sequelize, Sequelize);
 db.courses = require("./courses.model.js")(sequelize, Sequelize);
 db.User_courses = require("./user_courses.model.js")(sequelize, Sequelize);
+db.Report_images = require("./report_images.model.js")(sequelize, Sequelize);
 
 
 
@@ -77,6 +78,11 @@ db.devices.belongsTo(db.users, {
 // db.classification_details.belongsToMany(db.reports, { through: db.classifications, foreignKey: "classification_item", as: 'classification_item' });
 
 
+//report images
+db.Report_images.belongsTo(db.reports, {
+  foreignKey: 'report_id',
+  as: 'report'
+})
 
 // user herirarchy 
 db.user_hierarcys.belongsTo(db.users, {

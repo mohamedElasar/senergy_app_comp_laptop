@@ -5,10 +5,10 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING(200),
       allowNull: false
     },
-    image: {
-      type: Sequelize.STRING(255),
-      allowNull: true
-    },
+    // image: {
+    //   type: Sequelize.STRING(255),
+    //   allowNull: true
+    // },
     content: {
       type: Sequelize.TEXT,
       allowNull: false
